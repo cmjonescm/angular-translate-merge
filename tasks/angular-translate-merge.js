@@ -15,7 +15,7 @@ module.exports = function(grunt) {
      * @param obj2
      * @returns obj3 a new object based on obj1 and obj2
      */
-    function merge_options(obj1, obj2){
+    function mergeTranslations(obj1, obj2){
         var obj3 = {};
         for (var attrname in obj1) { obj3[attrname] = obj1[attrname]; }
         for (var attrname in obj2) { obj3[attrname] = obj2[attrname]; }
@@ -25,18 +25,18 @@ module.exports = function(grunt) {
     // table running total of entries
     var runningTotal;
 
-    function example(filepath, options) {
+    function merge(filepath, options) {
 
-        console.log("This is my example grunt task!!");
+        console.log("This is my angular-translate-merge grunt task!!");
         console.log(filepath);
-        //console.log(options);
+        console.log(options);
+
         var obj = grunt.file.readJSON(filepath);
 
         if (obj) {
-            if (obj.language === 'en') {
+            if (obj.language === options.language) {
                 if (runningTotal) {
-                    var result = merge_options(runningTotal.table, obj.table);
-                    runningTotal.table = result;
+                    runningTotal.table = mergeTranslations(runningTotal.table, obj.table);
                 }
                 else
                 {
@@ -50,7 +50,7 @@ module.exports = function(grunt) {
         }
     }
 
-    grunt.task.registerMultiTask('example', 'Build Locale files.', function () {
+    grunt.task.registerMultiTask('mergeAngularTranslate', 'Build Locale files.', function () {
 
         var options = this.options({
             force: grunt.option('force') === true,
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
 
 
         this.filesSrc.forEach(function(filepath) {
-            example(filepath, options);
+            merge(filepath, options);
         });
 
         // TODO: pick this up from the grunt configuration file
